@@ -167,7 +167,7 @@ if __name__ == '__main__':
 
     # iter over the videos
     embeddings_array = None
-    classes_list = []
+    labels_list = []
     for index, row in df.iterrows():
 
         relative_path = row['PATH_VIDEO']
@@ -200,15 +200,15 @@ if __name__ == '__main__':
             else:
                 embeddings_array = np.vstack((embeddings_array, embedding.detach().cpu().numpy()))
 
-            classes_list.append(classe)
+            labels_list.append(label)
 
     print("embeddings_array.shape: ", embeddings_array.shape)
-    print("len(classes_list): ", len(classes_list))
+    print("len(labels_list): ", len(labels_list))
 
     # applicazione tsne
     # costruisco un dataframe per collezionare le classi e le coordinate 2s di tsne
     number_of_classes = len(list_classes)
-    df_results = pd.DataFrame(data={'classe':  np.array(classes_list)})
+    df_results = pd.DataFrame(data={'label':  np.array(labels_list)})
 
     # applico t-sne
     tsne = TSNE(n_components=2, verbose=1, perplexity=40, n_iter=300)
@@ -216,25 +216,30 @@ if __name__ == '__main__':
     df_results['asse_1'] = tsne_results[:, 0]
     df_results['asse_2'] = tsne_results[:, 1]
 
+
     plt.figure(figsize=(10, 10))
     # t-sne plot
     sns.scatterplot(
         x="asse_1", y="asse_2",
-        hue="classe",
+        hue="label",
         palette=sns.color_palette("hls", n_colors=number_of_classes),
-        data=df,
-        legend="full").set_title('2D t-SNE')
+        data=df_results,
+        legend="full",
+        markerscale=2).set_title('2D t-SNE')
 
     path_result_image_1 = os.path.join(dir_storing_results, name_result_image)
     plt.savefig(path_result_image_1)
 
+    '''
+    plt.figure(figsize=(10, 10))
     # TSNE distribution of embedding array (version 2)
     print("find TSNE distribution for embedding array")
     tsne = TSNE(2)
     clustered = tsne.fit_transform(embeddings_array)
     fig = plt.figure(figsize=(12, 10))
     cmap = plt.get_cmap('Spectral', number_of_classes)
-    plt.scatter(*zip(*clustered), c=np.array(classes_list), cmap=cmap)
+    plt.scatter(*zip(*clustered), c=np.array(labels_list), cmap=cmap)
     plt.colorbar(drawedges=True)
     path_result_image_2 = os.path.join(dir_storing_results, "bis_" + name_result_image)
-    plt.savefig(path_result_image_1)
+    plt.savefig(path_result_image_2)
+    '''
