@@ -225,7 +225,7 @@ if __name__ == '__main__':
         palette=sns.color_palette("hls", n_colors=number_of_classes),
         data=df_results,
         legend="full",
-        s=10).set_title('2D t-SNE')
+        s=30).set_title('2D t-SNE')
 
     path_result_image_1 = os.path.join(dir_storing_results, name_result_image)
     plt.savefig(path_result_image_1)
