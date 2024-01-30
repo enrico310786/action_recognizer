@@ -262,7 +262,7 @@ def analyze_error_distribution(df_distribution, dir_save_results):
     # boxplot
     print("Plot error distribution grouped by dataset and actors")
     plt.figure(figsize=(15, 15))
-    sns.boxplot(data=df_distribution[df_distribution['TYPE_DATASET'] == 'ANOMALY'], x="ACTOR", y="RECONSTRUCTION_ERROR")
+    sns.boxplot(data=df_distribution[df_distribution['TYPE_DATASET'] == 'ANOMALY'], x="CLASS", y="RECONSTRUCTION_ERROR")
     plt.xticks(rotation=30, ha='right', rotation_mode='anchor')
     plt.title('Reconstruction error grouped by classes', fontsize=12)
 
