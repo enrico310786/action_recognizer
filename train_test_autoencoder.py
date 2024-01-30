@@ -282,7 +282,8 @@ def run_train_test_model(cfg, do_train, do_test):
     dataset_path = dataset_cfg['dataset_path']
     path_dataset_train_csv = dataset_cfg['path_dataset_train_csv']
     path_dataset_val_csv = dataset_cfg['path_dataset_val_csv']
-    class_to_recognize = dataset_cfg['avvitare']
+    class_to_recognize = dataset_cfg['class_to_recognize']
+    print("class_to_recognize: ", class_to_recognize)
 
     saving_dir_experiments = model_cfg['saving_dir_experiments']
     saving_dir_model = model_cfg['saving_dir_model']
