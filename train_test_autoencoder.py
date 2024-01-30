@@ -51,7 +51,7 @@ def calculate_errors(device,
 
     with torch.no_grad():
         # cycle on all batches
-        for inputs, classes in dataloader:
+        for inputs, labels, classes in dataloader:
             if cfg['model']['name_time_model'] == "3d_slowfast":
                 inputs = [i.to(device) for i in inputs]
             else:
