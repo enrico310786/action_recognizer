@@ -162,7 +162,7 @@ if __name__ == '__main__':
     # select the classis
     list_classes = list_classes.split(",")
     print("Selected classess: ", list_classes)
-    df = df[df['CLASS'].isin(list_classes)]
+    df = df[df['ENG_CLASS'].isin(list_classes)]
     df.reset_index(drop=True, inplace=True)
 
     # iter over the videos
