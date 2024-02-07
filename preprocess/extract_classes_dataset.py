@@ -3,11 +3,21 @@ import os
 import pandas as pd
 
 
-
 if __name__ == "__main__":
     '''
     Script to generate a csv to collect the path of each video and its corresponding class
     '''
+
+    ita2engclass = {"avvitare": "screw",
+                    "svitare": "unscrew",
+                    "avvitare_orario": "screw_1234",
+                    "avvitare_antiorario": "screw_1432",
+                    "avvitare_incrociato_2413": "screw_2413",
+                    "avvitare_incrociato_1342": "screw_1342",
+                    "avvita_brugola_1": "screw_allenkey_1",
+                    "svita_brugola_1": "unscrew_allenkey_1",
+                    "avvita_brugola_2": "screw_allenkey_2",
+                    "svita_brugola_2": "unscrew_allenkey_2"}
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--dir_dataset', type=str, help='directory of the dataset')
@@ -43,6 +53,8 @@ if __name__ == "__main__":
                                     'PATH_VIDEO': relative_path,
                                     'LABEL': class2label[action]}, ignore_index=True)
 
+    print("Add eng classes")
+    df['ENG_CLASS'] = df['CLASS'].map(ita2engclass)
     print("save the csv")
     df.to_csv("dataset_info.csv", index=False)
 
@@ -53,7 +65,7 @@ if __name__ == "__main__":
     print("")
     print("CLIP DISTRIBUTION BY CLASS")
     print("")
-    desc_grouped = df[['CLASS']].value_counts()
+    desc_grouped = df[['ENG_CLASS']].value_counts()
     print(desc_grouped)
     print("")
     print("class2label: ", class2label)

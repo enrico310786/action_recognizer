@@ -89,7 +89,7 @@ class Dataset(torch.utils.data.Dataset):
     def __getitem__(self, idx):
         video_path = os.path.join(self.dataset_path, self.df_dataset.iloc[idx]["PATH_VIDEO"])
         label = self.df_dataset.iloc[idx]["LABEL"]
-        classe = self.df_dataset.iloc[idx]["CLASS"]
+        classe = self.df_dataset.iloc[idx]["ENG_CLASS"]
 
         video = EncodedVideo.from_path(video_path)
         start_time = 0

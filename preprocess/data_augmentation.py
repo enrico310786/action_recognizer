@@ -9,7 +9,6 @@ import cv2
 import albumentations as A
 import pandas as pd
 
-
 transform = A.ReplayCompose([
     A.GridDistortion(distort_limit=0.2, p=0.7),
     A.Rotate(limit=7, p=0.6),
@@ -118,8 +117,8 @@ if __name__ == "__main__":
     os.makedirs(dir_augment_dataset, exist_ok=True)
 
     # create two dataset. The augmented video in the train set, the original video in the test set
-    df_train = pd.DataFrame(columns=['CLASS', 'LABEL', 'PATH_VIDEO'])
-    df_val = pd.DataFrame(columns=['CLASS', 'LABEL', 'PATH_VIDEO'])
+    df_train = pd.DataFrame(columns=['CLASS', 'LABEL', 'PATH_VIDEO', 'ENG_CLASS'])
+    df_val = pd.DataFrame(columns=['CLASS', 'LABEL', 'PATH_VIDEO', 'ENG_CLASS'])
 
     # load the dataframe of the original dataset
     path_dataframe = os.path.join(dir_orig_dataset, "dataset_info.csv")
@@ -129,6 +128,7 @@ if __name__ == "__main__":
     class2label = {}
     for index, row in df.iterrows():
         class_name = row["CLASS"]
+        eng_class_name = row["ENG_CLASS"]
         label = row["LABEL"]
         path_video = os.path.join(dir_orig_dataset, row["PATH_VIDEO"])
         name_video = path_video.split("/")[-1]
@@ -148,7 +148,8 @@ if __name__ == "__main__":
 
         df_val = df_val.append({'CLASS': class_name,
                                 'PATH_VIDEO': relative_path,
-                                'LABEL': label}, ignore_index=True)
+                                'LABEL': label,
+                                'ENG_CLASS': eng_class_name}, ignore_index=True)
 
         # load the video and divide it into frames. The output are RGB frames
         frame_list, _, fps, _ = load_video(path_video)
@@ -165,8 +166,8 @@ if __name__ == "__main__":
 
             df_train = df_train.append({'CLASS': class_name,
                                         'PATH_VIDEO': relative_path,
-                                        'LABEL': label}, ignore_index=True)
-
+                                        'LABEL': label,
+                                        'ENG_CLASS': eng_class_name}, ignore_index=True)
 
     print("save the train csv")
     path_train_csv = os.path.join(dir_augment_dataset, "df_train.csv")

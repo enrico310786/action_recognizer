@@ -158,7 +158,7 @@ if __name__ == '__main__':
     # build the class2label dict
     class2label = {}
     for index, row in df.iterrows():
-        class_name = row["CLASS"]
+        class_name = row["ENG_CLASS"]
         label = row["LABEL"]
 
         if class_name not in class2label:
@@ -179,7 +179,7 @@ if __name__ == '__main__':
 
         relative_path = row['PATH_VIDEO']
         path_video = os.path.join(path_dataset, relative_path)
-        classe = row['CLASS']
+        classe = row['ENG_CLASS']
         label = row['LABEL']
 
         # load the video

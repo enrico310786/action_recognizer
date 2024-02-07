@@ -168,11 +168,12 @@ if __name__ == '__main__':
     # iter over the videos
     embeddings_array = None
     labels_list = []
+    classes_list = []
     for index, row in df.iterrows():
 
         relative_path = row['PATH_VIDEO']
         path_video = os.path.join(path_dataset, relative_path)
-        classe = row['CLASS']
+        classe = row['ENG_CLASS']
         label = row['LABEL']
 
         # load the video
@@ -201,6 +202,7 @@ if __name__ == '__main__':
                 embeddings_array = np.vstack((embeddings_array, embedding.detach().cpu().numpy()))
 
             labels_list.append(label)
+            classes_list.append(classe)
 
     print("embeddings_array.shape: ", embeddings_array.shape)
     print("len(labels_list): ", len(labels_list))
@@ -208,38 +210,25 @@ if __name__ == '__main__':
     # applicazione tsne
     # costruisco un dataframe per collezionare le classi e le coordinate 2s di tsne
     number_of_classes = len(list_classes)
-    df_results = pd.DataFrame(data={'label':  np.array(labels_list)})
+    #df_results = pd.DataFrame(data={'label':  np.array(labels_list)})
+    df_results = pd.DataFrame(data={'classes': np.array(classes_list)})
 
     # applico t-sne
     tsne = TSNE(n_components=2, verbose=1, perplexity=40, n_iter=300)
     tsne_results = tsne.fit_transform(embeddings_array)
-    df_results['asse_1'] = tsne_results[:, 0]
-    df_results['asse_2'] = tsne_results[:, 1]
+    df_results['axis_1'] = tsne_results[:, 0]
+    df_results['axis_2'] = tsne_results[:, 1]
 
-
-    plt.figure(figsize=(10, 10))
+    plt.figure(figsize=(9, 9))
     # t-sne plot
     sns.scatterplot(
-        x="asse_1", y="asse_2",
-        hue="label",
+        x="axis_1", y="axis_2",
+        hue="classes",
         palette=sns.color_palette("hls", n_colors=number_of_classes),
         data=df_results,
-        legend="full",
         s=50).set_title('2D t-SNE')
+    #plt.legend(loc=1)
+    plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
 
     path_result_image_1 = os.path.join(dir_storing_results, name_result_image)
-    plt.savefig(path_result_image_1)
-
-    '''
-    plt.figure(figsize=(10, 10))
-    # TSNE distribution of embedding array (version 2)
-    print("find TSNE distribution for embedding array")
-    tsne = TSNE(2)
-    clustered = tsne.fit_transform(embeddings_array)
-    fig = plt.figure(figsize=(12, 10))
-    cmap = plt.get_cmap('Spectral', number_of_classes)
-    plt.scatter(*zip(*clustered), c=np.array(labels_list), cmap=cmap)
-    plt.colorbar(drawedges=True)
-    path_result_image_2 = os.path.join(dir_storing_results, "bis_" + name_result_image)
-    plt.savefig(path_result_image_2)
-    '''
+    plt.savefig(path_result_image_1, bbox_inches='tight')

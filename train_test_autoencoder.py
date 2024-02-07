@@ -83,7 +83,7 @@ def calculate_errors(device,
             #error = (np.square(emb - rec_emb)).mean()
             error = (np.square(emb - rec_emb)).sum() # è la stessa cosa di criterion = nn.MSELoss(reduction='sum'). Fa la somma dei quadrati delle differenze
 
-            df_distribution = df_distribution.append({'CLASS': classe,
+            df_distribution = df_distribution.append({'ENG_CLASS': classe,
                                                       'RECONSTRUCTION_ERROR': error,
                                                       'TYPE_DATASET': type_dataset}, ignore_index=True)
 
@@ -254,7 +254,7 @@ def analyze_error_distribution(df_distribution, dir_save_results):
     print("-------------------------------------------------------------------")
     print("RECONTRUCTION_ERROR DISTRIBUTION GROUPED BY CLASS")
     print("")
-    desc_grouped = df_distribution[df_distribution['TYPE_DATASET'] == 'ANOMALY'].groupby('CLASS')["RECONSTRUCTION_ERROR"].describe()
+    desc_grouped = df_distribution[df_distribution['TYPE_DATASET'] == 'ANOMALY'].groupby('ENG_CLASS')["RECONSTRUCTION_ERROR"].describe()
     print("RECONTRUCTION_ERROR distrbution for dataset ANOMALY: ")
     print(desc_grouped)
     print("-------------------------------------------------------------------")
@@ -262,7 +262,7 @@ def analyze_error_distribution(df_distribution, dir_save_results):
     # boxplot
     print("Plot error distribution grouped by dataset and actors")
     plt.figure(figsize=(15, 15))
-    sns.boxplot(data=df_distribution[df_distribution['TYPE_DATASET'] == 'ANOMALY'], x="CLASS", y="RECONSTRUCTION_ERROR")
+    sns.boxplot(data=df_distribution[df_distribution['TYPE_DATASET'] == 'ANOMALY'], x="ENG_CLASS", y="RECONSTRUCTION_ERROR")
     plt.xticks(rotation=30, ha='right', rotation_mode='anchor')
     plt.title('Reconstruction error grouped by classes', fontsize=12)
 
@@ -314,8 +314,8 @@ def run_train_test_model(cfg, do_train, do_test):
     df_dataset_train_all = pd.read_csv(path_dataset_train_csv)
     df_dataset_val_all = pd.read_csv(path_dataset_val_csv)
 
-    df_dataset_train = df_dataset_train_all[df_dataset_train_all["CLASS"] == class_to_recognize]
-    df_dataset_val = df_dataset_val_all[df_dataset_val_all["CLASS"] == class_to_recognize]
+    df_dataset_train = df_dataset_train_all[df_dataset_train_all["ENG_CLASS"] == class_to_recognize]
+    df_dataset_val = df_dataset_val_all[df_dataset_val_all["ENG_CLASS"] == class_to_recognize]
     df_dataset_anomaly = df_dataset_val_all
 
     df_dataset_train = df_dataset_train.sample(frac=1).reset_index(drop=True)
@@ -459,7 +459,7 @@ def run_train_test_model(cfg, do_train, do_test):
         # go through the lines of the dataset
         class2label = {}
         for index, row in df_dataset_train.iterrows():
-            class_name = row["CLASS"]
+            class_name = row["ENG_CLASS"]
             label = row["LABEL"]
 
             if class_name not in class2label:
@@ -474,7 +474,7 @@ def run_train_test_model(cfg, do_train, do_test):
         print("-------------------------------------------------------------------")
 
         # create dataset for distribution
-        df_distribution = pd.DataFrame(columns=['CLASS', 'RECONSTRUCTION_ERROR', 'TYPE_DATASET'])
+        df_distribution = pd.DataFrame(columns=['ENG_CLASS', 'RECONSTRUCTION_ERROR', 'TYPE_DATASET'])
 
         '''
         # 12 - execute the inferences on the train, val and test set
