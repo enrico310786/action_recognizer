@@ -70,8 +70,12 @@ def load_video(video_path, permute_color_frame, transform):
 if __name__ == '__main__':
 
     """
-    The script take a model, the directory where a stored the videos, the list of classes to analyze.
-    Fot the collected video the script calculate the embedding with the loaded model and generate the TSNE 2d distribution
+    The script take a model, the directory where are stored the videos, the list of classes to analyze.
+    For the collected video the script calculates the embedding with the loaded model.
+    Is then calculated the centroid of each class and
+    1) for each centroid are calculated the distances of all the embeddings grouped by class and check the corresponding distributions
+    2) for each centroid I consider the farthest points of the same class of the centroids and counts the number of embedding inside that hypersphere gouped by class
+    3) for each centroid I consider the closest points not belonging to the same class of the centroids and counts the number of embedding inside that hypersphere gouped by class
     """
 
     parser = argparse.ArgumentParser()
@@ -211,7 +215,7 @@ if __name__ == '__main__':
     print("embeddings_array.shape: ", embeddings_array.shape)
     print("class_labels.shape: ", class_labels.shape)
 
-    # for each class i contruct the centroid of the corresponding embeddings
+    # for each class i construct the centroid of the corresponding embeddings
     embedding_centroids = []
     # calculate the centroid of the embedding vectors for each class. Iter over the label of each class from 0 to N
     for idx in label2class.keys():

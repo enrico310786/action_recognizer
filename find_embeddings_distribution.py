@@ -70,7 +70,7 @@ def load_video(video_path, permute_color_frame, transform):
 if __name__ == '__main__':
 
     """
-    The script take a model, the directory where a stored the video, the list of classes to analyze.
+    The script take a model, the directory where are stored the video, the list of classes to analyze.
     Fot the collected video the script calculate the embedding with the loaded model and generate the TSNE 2d distribution
     """
 
@@ -207,13 +207,11 @@ if __name__ == '__main__':
     print("embeddings_array.shape: ", embeddings_array.shape)
     print("len(labels_list): ", len(labels_list))
 
-    # applicazione tsne
-    # costruisco un dataframe per collezionare le classi e le coordinate 2s di tsne
+    # tsne application
+    # build a dataframe to collect the classes and the coordinates
     number_of_classes = len(list_classes)
-    #df_results = pd.DataFrame(data={'label':  np.array(labels_list)})
     df_results = pd.DataFrame(data={'classes': np.array(classes_list)})
 
-    # applico t-sne
     tsne = TSNE(n_components=2, verbose=1, perplexity=40, n_iter=300)
     tsne_results = tsne.fit_transform(embeddings_array)
     df_results['axis_1'] = tsne_results[:, 0]
@@ -227,7 +225,6 @@ if __name__ == '__main__':
         palette=sns.color_palette("hls", n_colors=number_of_classes),
         data=df_results,
         s=50).set_title('2D t-SNE')
-    #plt.legend(loc=1)
     plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
 
     path_result_image_1 = os.path.join(dir_storing_results, name_result_image)
