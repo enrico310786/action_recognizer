@@ -68,7 +68,7 @@ if __name__ == "__main__":
 
     print("RECONSTRUCTION_ERROR DISTRIBUTION GROUPED BY CLASS")
     print("")
-    desc_grouped = df_distribution.groupby('CLASS')[
+    desc_grouped = df_distribution.groupby('ENG_CLASS')[
         "RECONSTRUCTION_ERROR"].describe()[['mean', 'std', 'min', '75%', 'max']]
     print(desc_grouped)
     print("")
@@ -84,14 +84,14 @@ if __name__ == "__main__":
 
     print("LOG_RECONSTRUCTION_ERROR DISTRIBUTION GROUPED BY CLASS")
     print("")
-    desc_grouped = df_distribution.groupby('CLASS')[
+    desc_grouped = df_distribution.groupby('ENG_CLASS')[
         "LOG_RECONSTRUCTION_ERROR"].describe()[['mean', 'std', 'min', '75%', 'max']]
     print(desc_grouped)
     print("")
 
     # boxplot
     plt.figure(figsize=(15, 15))
-    sns.boxplot(data=df_distribution, x="CLASS", y="LOG_RECONSTRUCTION_ERROR")
+    sns.boxplot(data=df_distribution, x="ENG_CLASS", y="LOG_RECONSTRUCTION_ERROR")
     plt.xticks(rotation=45)
     plt.title('val set', fontsize=12)
     plt.savefig(os.path.join(dir_results, plot_log_class_pos))
@@ -104,8 +104,8 @@ if __name__ == "__main__":
     class2label = {reference_class: 0, competitive_class: 1}
     list_classes = [reference_class, competitive_class]
     # select just the rows with the selected classes
-    df_reduced = df_distribution[df_distribution['CLASS'].isin(list_classes)].reset_index(drop=True)
-    df_reduced['LABEL'] = df_reduced['CLASS'].map(class2label)
+    df_reduced = df_distribution[df_distribution['ENG_CLASS'].isin(list_classes)].reset_index(drop=True)
+    df_reduced['LABEL'] = df_reduced['ENG_CLASS'].map(class2label)
     print("class2label: ", class2label)
     df_distribution.to_csv(os.path.join(dir_results, log_labeled_csv), index=False)
 
@@ -116,7 +116,7 @@ if __name__ == "__main__":
         pred_label_list = []
     
         for index, row in df_reduced.iterrows():
-            classe = row['CLASS']
+            classe = row['ENG_CLASS']
             label = row['LABEL']
 
             if log_scale:

@@ -70,7 +70,7 @@ def load_video(video_path, permute_color_frame, transform):
 if __name__ == '__main__':
 
     """
-    The script take a model, the directory where a stored the video, the list of classes to analyze.
+    The script take a model, the directory where a stored the videos, the list of classes to analyze.
     Fot the collected video the script calculate the embedding with the loaded model and generate the TSNE 2d distribution
     """
 
@@ -190,11 +190,8 @@ if __name__ == '__main__':
 
             # add one extra dimension to make the inference
             if is_slowfast:
-                #print("tensor_video[0].size(): ", tensor_video[0].size())
-                #print("tensor_video[1].size(): ", tensor_video[1].size())
                 tensor_video = [i.to(device)[None, ...] for i in tensor_video]
             else:
-                #print("tensor_video.size(): ", tensor_video.size())
                 tensor_video = tensor_video[None].to(device)
 
             # inference to extract the embedding
@@ -214,7 +211,7 @@ if __name__ == '__main__':
     print("embeddings_array.shape: ", embeddings_array.shape)
     print("class_labels.shape: ", class_labels.shape)
 
-    # for each class i contruct the centroids of the corresponding embeddings
+    # for each class i contruct the centroid of the corresponding embeddings
     embedding_centroids = []
     # calculate the centroid of the embedding vectors for each class. Iter over the label of each class from 0 to N
     for idx in label2class.keys():
@@ -258,7 +255,6 @@ if __name__ == '__main__':
 
         # analyze the hypersphere of the farthest point
         # 1. find the farthest point of the same class of the centroid
-        #max_in_distance = df_distribution[df_distribution["CLASS_EMBEDDING"] == label2class[idx]]["EMBEDDING_DISTANCE"].max()
         df_filtered = df_distribution[df_distribution['CLASS_EMBEDDING'] == label2class[idx]]
         max_in_distance = df_filtered["EMBEDDING_DISTANCE"].max()
         # 2. find the number of points grouped by class in the hypersphere
