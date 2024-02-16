@@ -78,9 +78,9 @@ if __name__ == '__main__':
     parser.add_argument('--path_dataset', type=str, help='path of the dataset')
     parser.add_argument('--path_csv_dataset', type=str, help='path of the csv where are stored the info of the video')
     parser.add_argument('--list_classes', type=str, default="", help='list of classes to use separed by commas')
-    parser.add_argument('--name_model', type=str, help='name of the model to use to find the embedding')
+    parser.add_argument('--name_model', type=str, help='name of the model to use to find the embedding. Choose between "3d_slowfast", "timesformer" or "r2+1"')
     parser.add_argument('--dir_storing_results', type=str, help='directory where to store the results')
-    parser.add_argument('--name_result_image', type=str, help='name of the image with the TSNE distribution')
+    parser.add_argument('--name_result_image', type=str, help='name of the image with the TSNE distribution as "text.png"')
     parser.add_argument('--num_frames_to_sample', type=int, help='number of frames to use')
 
     opt = parser.parse_args()

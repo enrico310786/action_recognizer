@@ -1,0 +1,44 @@
+data:
+  alpha_slowfast: 4
+  max_size: 320
+  mean:
+  - 0.43216
+  - 0.394666
+  - 0.37645
+  min_size: 256
+  num_frames_to_sample: 64
+  permute_color_frame: 0
+  resize_to: 112
+  std:
+  - 0.22803
+  - 0.22145
+  - 0.216989
+dataset:
+  batch_size: 4
+  class_to_recognize: screw
+  dataset_path: /home/randellini/action_recognizer/dataset/augmented_square_256_mp4
+  path_dataset_train_csv: /home/randellini/action_recognizer/dataset/augmented_square_256_mp4/df_train.csv
+  path_dataset_val_csv: /home/randellini/action_recognizer/dataset/augmented_square_256_mp4/df_val.csv
+model:
+  dim_autoencoder_layers: 256,128
+  do_test: 1
+  do_train: 1
+  dropout: 0.3
+  epoch_start_unfreeze: 10
+  freeze_layers: 1
+  init_dim: 512
+  layer_start_unfreeze: 0
+  learning_rate: 0.005
+  lr_factor: 0.1
+  milestones:
+  - 5
+  - 10
+  - 25
+  - 50
+  name_time_model: r2plus1d_18
+  num_autoencoder_layers: 2
+  num_epoch: 50
+  saving_dir_experiments: /home/randellini/action_recognizer/results/r2plus1/avvitare
+  saving_dir_model: v2
+  scheduler_type: MultiStepLR
+  use_pretrained_scheduler: 1
