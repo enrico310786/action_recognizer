@@ -171,12 +171,22 @@ I found the best solution for the screwing action with the model R(2+1)D obtaine
 "configs/configs_autoencoder/avvitare/r2_plus_1/version_2.yaml". You can find the results at "results/r2plus1/avvitare/v2"
 
 ### Check classifier
-The following script 
+
+Once the model is trained we can observe its behaviour in the full original dataset. With the following script 
+we can print the error reconstruction plots and statistics both in normal and log scale. The scripts uses the 
+reconstruction_error_dataset.csv saved at the end of the training process.
 
 ```bash
 check_classifier_trained_model.py --dir_results <directory where is located the best model and its configuration file>
 ```
 
+These infos are useful to choose the threshold value to decouple the desired action from all the others.
+Once the threshold has been identified you can run the following command to find the classification report and confusion matrix
+between the selected action and the most competitive one
+
+```bash
+check_classifier_trained_model.py --dir_results <directory where is located the best model and its configuration file> --theshorld <theshorld value> --log_scale <yes if the th, is in log scale> --reference_clas <the class of interest> --competitive_class <the class with which compare the desired class>
+```
 
 ## Evironment
 
