@@ -1,19 +1,19 @@
 dataset:
-  dataset_path: /home/randellini/action_recognizer/dataset/augmented_square_256_mp4
-  path_dataset_train_csv: /home/randellini/action_recognizer/dataset/augmented_square_256_mp4/df_train.csv
-  path_dataset_val_csv: /home/randellini/action_recognizer/dataset/augmented_square_256_mp4/df_val.csv
+  dataset_path: /home/ubuntu/action_recognizer/dataset/augmented_square_256_mp4
+  path_dataset_train_csv: /home/ubuntu/action_recognizer/dataset/augmented_square_256_mp4/df_train.csv
+  path_dataset_val_csv: /home/ubuntu/action_recognizer/dataset/augmented_square_256_mp4/df_val.csv
   batch_size: 4
-  class_to_recognize: screw
+  class_to_recognize: screw_allenkey_1
 model:
   name_time_model: r2plus1d_18 # timesformer - r2plus1d_18 - r3d - 3d_slowfast
   init_dim: 512 # 768 for timesformer - 512 for r2plus1d_18 - 2048 for r3d - 2304 for 3d_slowfast
   num_autoencoder_layers: 2 # 2 or 3
-  dim_autoencoder_layers: 256,128 #512,256,128
+  dim_autoencoder_layers: 256,128,64 #512,256,128
   freeze_layers: 1
   epoch_start_unfreeze: 10
   layer_start_unfreeze: 0
-  saving_dir_experiments: results/r2plus1/avvitare
-  saving_dir_model: v2
+  saving_dir_experiments: results/r2plus1/screw_allenkey_1
+  saving_dir_model: v3
   num_epoch: 50
   learning_rate: 0.005
   scheduler_type: MultiStepLR

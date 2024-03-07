@@ -2,17 +2,17 @@ dataset:
   dataset_path: /home/randellini/action_recognizer/dataset/augmented_square_256_mp4
   path_dataset_train_csv: /home/randellini/action_recognizer/dataset/augmented_square_256_mp4/df_train.csv
   path_dataset_val_csv: /home/randellini/action_recognizer/dataset/augmented_square_256_mp4/df_val.csv
-  batch_size: 8
+  batch_size: 4
   class_to_recognize: screw_allenkey_1
 model:
-  name_time_model: timesformer # timesformer - r2plus1d_18 - r3d - 3d_slowfast
-  init_dim: 768 # 768 for timesformer - 512 for r2plus1d_18 - 2048 for r3d - 2304 for 3d_slowfast
+  name_time_model: r2plus1d_18 # timesformer - r2plus1d_18 - r3d - 3d_slowfast
+  init_dim: 512 # 768 for timesformer - 512 for r2plus1d_18 - 2048 for r3d - 2304 for 3d_slowfast
   num_autoencoder_layers: 2 # 2 or 3
-  dim_autoencoder_layers: 512,256,128 #512,256,128
+  dim_autoencoder_layers: 256,128 #512,256,128
   freeze_layers: 1
   epoch_start_unfreeze: 10
-  layer_start_unfreeze: 0 # dal layer 6 al 10
-  saving_dir_experiments: results/timesformer/avvita_brugola_1
+  layer_start_unfreeze: 0
+  saving_dir_experiments: results/r2plus1/screw_allenkey_1
   saving_dir_model: v1
   num_epoch: 50
   learning_rate: 0.005
@@ -24,9 +24,11 @@ model:
   do_train: 1
   do_test: 1
 data:
-  num_frames_to_sample: 32 # 64 non ce la fa nella macchina con 12 GB
-  mean: [0.45, 0.45, 0.45]
-  std: [0.225, 0.225, 0.225]
-  resize_to: 224
-  permute_color_frame: 1 # 1 for timesformer - 0 for r2plus1d_18 - 0 for r3d - 0 for 3d_slowfast
+  num_frames_to_sample: 64
+  mean: [0.43216, 0.394666, 0.37645]
+  std: [0.22803, 0.22145, 0.216989]
+  min_size: 256
+  max_size: 320
+  resize_to: 112
+  permute_color_frame: 0 # 1 for timesformer - 0 for r2plus1d_18 - 0 for r3d - 0 for 3d_slowfast
   alpha_slowfast: 4

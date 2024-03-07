@@ -3,21 +3,21 @@ dataset:
   path_dataset_train_csv: /mnt/efs/enrico/action_recognizer/dataset/augmented_square_256_mp4/df_train.csv
   path_dataset_val_csv: /mnt/efs/enrico/action_recognizer/dataset/augmented_square_256_mp4/df_val.csv
   batch_size: 16
-  class_to_recognize: avvitare
+  class_to_recognize: screw
 model:
   name_time_model: 3d_slowfast # timesformer - r2plus1d_18 - r3d - 3d_slowfast
   init_dim: 2304 # 768 for timesformer - 512 for r2plus1d_18 - 2048 for r3d - 2304 for 3d_slowfast
   num_autoencoder_layers: 3 # 2 or 3
   dim_autoencoder_layers: 1792,1280,768 #512,256,128
   freeze_layers: 1
-  epoch_start_unfreeze: 15
-  layer_start_unfreeze: 270
-  saving_dir_experiments: results/3d_slowfast/avvitare
-  saving_dir_model: v1
-  num_epoch: 30
+  epoch_start_unfreeze: 10
+  layer_start_unfreeze: 153
+  saving_dir_experiments: results/3d_slowfast/screw
+  saving_dir_model: v3
+  num_epoch: 45
   learning_rate: 0.005
   scheduler_type: MultiStepLR
-  milestones: [5,10,15,30]
+  milestones: [5,10,20,45]
   use_pretrained_scheduler: 1
   lr_factor: 0.1
   dropout: 0.3
