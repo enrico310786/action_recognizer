@@ -202,7 +202,7 @@ if __name__ == '__main__':
 
     # 6 - load the video
     video_tensor = load_clip_video(path_video)
-    print("Before transformation - video_tensor['video'].size(): ", video_tensor['video'].size()) # [N, C, H, W]
+    print("Before transformation - video_tensor['video'].size(): ", video_tensor['video'].size()) # [C, N, H, W]
     video_tensor = transform_video(video_tensor)
     video_tensor = video_tensor["video"]
     print("After transformation: video_tensor.size(): ", video_tensor.size())  # [C, N, H, W]
@@ -219,6 +219,8 @@ if __name__ == '__main__':
         # the timesformer gets first the number of frames then the number of channels
         video_tensor = torch.permute(video_tensor, (1, 0, 2, 3))  # [N, C, H, W]
         frames_tensor = torch.permute(frames_tensor, (1, 0, 2, 3))  # [N, C, H, W]
+        print("After permute_color_frame: video_tensor.size(): ", video_tensor.size())
+        print("After permute_color_frame: frames_tensor.size(): ", frames_tensor.size())
 
     # 7 - augment one dimension
     if is_slowfast:
