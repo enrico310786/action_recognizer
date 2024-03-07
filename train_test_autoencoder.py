@@ -308,6 +308,7 @@ def run_train_test_model(cfg, do_train, do_test):
     if model_cfg['name_time_model'] == "3d_slowfast":
         is_slowfast = True
         print("Set is_slowfast to True")
+    print("is_slowfast: ", is_slowfast)
     use_pretrained_scheduler = model_cfg.get("use_pretrained_scheduler", 1.0) > 0.0
 
     # load, filter and shuffle the dataset

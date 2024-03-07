@@ -125,7 +125,7 @@ class Dataset_V2(torch.utils.data.Dataset):
         self.alpha_slowfast = data_cfg.get("alpha_slowfast", None)
 
         # in this case i do not perform any runtime transformations. The data augmentation has been done offline
-        if not self.is_slowfast:
+        if self.is_slowfast:
             self.transform = T.Compose([
                 T.Normalize(mean=self.mean, std=self.std),
                 T.Resize(self.resize_to),
