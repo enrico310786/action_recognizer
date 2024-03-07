@@ -257,16 +257,16 @@ if __name__ == '__main__':
     reconstructed_embeddings = None
 
     print("start inference")
-    start_time = time.time()
+    start_time_2 = time.time()
     with torch.no_grad():
         embeddings, reconstructed_embeddings, _ = model(frames_tensor)
-    end_time = time.time()
+    end_time_2 = time.time()
 
     # calculate the error
     error = err_function(reconstructed_embeddings[0], embeddings[0]).item()
 
     print("error: ", error)
-    print("inference_time: ", end_time - start_time)
+    print("inference_time: ", end_time_2 - start_time_2)
 
 
 
