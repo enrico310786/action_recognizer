@@ -130,7 +130,7 @@ if __name__ == '__main__':
     print("Build the model")
     model = SpaceTimeAutoencoder(model_config=cfg["model"]).to(device)
     checkpoint_dir = os.path.join(cfg["model"]['saving_dir_experiments'], cfg["model"]['saving_dir_model'])
-    path_checkpoint = find_last_checkpoint_file(checkpoint_dir, use_best_checkpoint=False)
+    path_checkpoint = find_last_checkpoint_file(checkpoint_dir, use_best_checkpoint=True)
     print("Load the chekpoint at '{}'".format(path_checkpoint))
     checkpoint = torch.load(path_checkpoint, map_location=torch.device(device))
     model.load_state_dict(checkpoint['model'])
