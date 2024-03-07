@@ -240,10 +240,10 @@ if __name__ == '__main__':
     start_time = time.time()
     with torch.no_grad():
         embeddings, reconstructed_embeddings, _ = model(video_tensor)
+    end_time = time.time()
 
     # calculate the error
     error = err_function(reconstructed_embeddings[0], embeddings[0]).item()
-    end_time = time.time()
 
     print("error: ", error)
     print("inference_time: ", end_time - start_time)
@@ -252,15 +252,18 @@ if __name__ == '__main__':
     print("INFERENCE WITH FRAMES TENSOR")
     print("------------------------------------")
 
-    # make inference for video
+    # make inference for frames
+    embeddings = None
+    reconstructed_embeddings = None
+
     print("start inference")
     start_time = time.time()
     with torch.no_grad():
         embeddings, reconstructed_embeddings, _ = model(frames_tensor)
+    end_time = time.time()
 
     # calculate the error
     error = err_function(reconstructed_embeddings[0], embeddings[0]).item()
-    end_time = time.time()
 
     print("error: ", error)
     print("inference_time: ", end_time - start_time)
