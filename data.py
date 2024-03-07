@@ -98,10 +98,11 @@ class Dataset(torch.utils.data.Dataset):
         end_sec = start_time + clip_duration
         video_data = video.get_clip(start_sec=start_time, end_sec=end_sec)
         video_data = self.transform(video_data)
-        video_tensor = video_data["video"]
+        video_tensor = video_data["video"] # [C, N, H, W]
 
 
         if self.permute_color_frame:
+            # the timesformer gets first the number of frames then the number of channels # [N, C, H, W]
             video_tensor = torch.permute(video_tensor, (1, 0, 2, 3))
 
         return video_tensor, label, classe
@@ -155,6 +156,7 @@ class Dataset_V2(torch.utils.data.Dataset):
         print("After transformation: frames_tensor.size(): ", frames_tensor.size())  # [C, N, H, W]
 
         if self.permute_color_frame:
+            # the timesformer gets first the number of frames then the number of channels # [N, C, H, W]
             frames_tensor = torch.permute(frames_tensor, (1, 0, 2, 3))
 
         return frames_tensor, label, classe
