@@ -151,9 +151,9 @@ class Dataset_V2(torch.utils.data.Dataset):
 
         frames_tensor, _, _, _ = self.load_frames_video(video_path)
         frames_tensor = torch.stack(frames_tensor)
-        print("Before transformation - frames_tensor.size(): ", frames_tensor.size())  # [N, C, H, W]
+        #print("Before transformation - frames_tensor.size(): ", frames_tensor.size())  # [N, C, H, W]
         frames_tensor = self.transform(frames_tensor)
-        print("After transformation: frames_tensor.size(): ", frames_tensor.size())  # [C, N, H, W]
+        #print("After transformation: frames_tensor.size(): ", frames_tensor.size())  # [C, N, H, W]
 
         if self.permute_color_frame:
             # the timesformer gets first the number of frames then the number of channels # [N, C, H, W]
