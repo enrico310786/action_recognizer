@@ -63,7 +63,7 @@ def load_video(video_path, permute_color_frame, transform):
 if __name__ == '__main__':
 
     """
-    The script select a model, the number of frames to sample and a video. It generate the embedding of the video
+    The script select a base model, the number of frames to sample and a video. It generate the embedding of the video
     """
 
     parser = argparse.ArgumentParser()
