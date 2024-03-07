@@ -188,6 +188,11 @@ between the selected action and the most competitive one
 check_classifier_trained_model.py --dir_results <directory where is located the best model and its configuration file> --theshorld <theshorld value> --log_scale <yes if the th, is in log scale> --reference_clas <the class of interest> --competitive_class <the class with which compare the desired class>
 ```
 
+## Updates
+
+I changed the function to load a video clip. Thus the dataloader use the Dataset_V2 class intead of the Dataset class in the data,py script
+
+
 ## Evironment
 
 Build the environment based on python3.7
