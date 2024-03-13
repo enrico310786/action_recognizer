@@ -100,7 +100,6 @@ class Dataset(torch.utils.data.Dataset):
         video_data = self.transform(video_data)
         video_tensor = video_data["video"] # [C, N, H, W]
 
-
         if self.permute_color_frame:
             # the timesformer gets first the number of frames then the number of channels # [N, C, H, W]
             video_tensor = torch.permute(video_tensor, (1, 0, 2, 3))
@@ -109,7 +108,7 @@ class Dataset(torch.utils.data.Dataset):
 
 
 class Dataset_V2(torch.utils.data.Dataset):
-    def __init__(self, df_dataset, data_cfg, dataset_path, is_train=False, is_slowfast=False) -> None:
+    def __init__(self, df_dataset, data_cfg, dataset_path, is_train=False, is_slowfast=False, check_camere=False) -> None:
         super().__init__()
 
         self.df_dataset = df_dataset
@@ -123,6 +122,7 @@ class Dataset_V2(torch.utils.data.Dataset):
         self.is_train = is_train
         self.is_slowfast = is_slowfast
         self.alpha_slowfast = data_cfg.get("alpha_slowfast", None)
+        self.check_camere = check_camere
 
         # in this case i do not perform any runtime transformations. The data augmentation has been done offline
         if self.is_slowfast:
@@ -159,7 +159,15 @@ class Dataset_V2(torch.utils.data.Dataset):
             # the timesformer gets first the number of frames then the number of channels # [N, C, H, W]
             frames_tensor = torch.permute(frames_tensor, (1, 0, 2, 3))
 
-        return frames_tensor, label, classe
+        if self.check_camere:
+            if video_path.split("/")[0].endswith("_v2"):
+                camera = "v2"
+            else:
+                camera = "v1"
+        else:
+            camera = "v1"
+
+        return frames_tensor, label, classe, camera
 
     def load_frames_video(self, video_path):
 
@@ -185,25 +193,29 @@ class Dataset_V2(torch.utils.data.Dataset):
         return frame_list, len(frame_list), fps, int(video.duration)
 
 
-def create_loaders(df_dataset_train, df_dataset_val, df_dataset_anomaly, data_cfg, dataset_path, batch_size, is_slowfast=False):
+def create_loaders(df_dataset_train, df_dataset_val, df_dataset_anomaly, data_cfg, dataset_path, batch_size, is_slowfast=False, check_camere=False):
 
     # 1 - istanzio la classe dataset di train, val e test
     classification_dataset_train = Dataset_V2(df_dataset=df_dataset_train,
-                                           data_cfg=data_cfg,
-                                           dataset_path=dataset_path,
-                                           is_train=True,
-                                           is_slowfast=is_slowfast)
+                                              data_cfg=data_cfg,
+                                              dataset_path=dataset_path,
+                                              is_train=True,
+                                              is_slowfast=is_slowfast,
+                                              check_camere=check_camere)
+
     classification_dataset_val = Dataset_V2(df_dataset=df_dataset_val,
-                                         data_cfg=data_cfg,
-                                         dataset_path=dataset_path,
-                                         is_slowfast=is_slowfast)
+                                            data_cfg=data_cfg,
+                                            dataset_path=dataset_path,
+                                            is_slowfast=is_slowfast,
+                                            check_camere=check_camere)
 
     classification_dataset_anomaly = None
     if df_dataset_anomaly is not None:
         classification_dataset_anomaly = Dataset_V2(df_dataset=df_dataset_anomaly,
-                                                 data_cfg=data_cfg,
-                                                 dataset_path=dataset_path,
-                                                 is_slowfast=is_slowfast)
+                                                    data_cfg=data_cfg,
+                                                    dataset_path=dataset_path,
+                                                    is_slowfast=is_slowfast,
+                                                    check_camere=check_camere)
 
 
     # 2 - istanzio i dataloader

@@ -30,7 +30,7 @@ def load_video(video_path):
     return frame_list, len(frame_list), fps, int(video.duration)
 
 
-def make_square_video(path_original_video, path_square_video, size, sampling_rate=1, offset=250, fps_rate=30):
+def make_square_video(path_original_video, path_square_video, size, offset, sampling_rate=1, fps_rate=30):
 
     # 1) load video as list of RGB frames
     frame_list, num_frames, fps, video_duration = load_video(path_original_video)
@@ -102,11 +102,13 @@ if __name__ == "__main__":
     parser.add_argument('--dir_rect_dataset', type=str, help='directory where is stored the rectangle shape dataset')
     parser.add_argument('--dir_square_dataset', type=str, help='directory where to save the square shape dataset')
     parser.add_argument('--size', type=int, default=1080, help='finale size for the frames')
+    parser.add_argument('--offset', type=int, default=250, help='offset to ad to the crop')
 
     opt = parser.parse_args()
     dir_rect_dataset = opt.dir_rect_dataset
     dir_square_dataset = opt.dir_square_dataset
     size = int(opt.size)
+    offset = int(opt.offset)
 
     print("final size: ", size)
 
@@ -141,7 +143,8 @@ if __name__ == "__main__":
                     else:
                         make_square_video(path_original_video=path_rect_video,
                                           path_square_video=path_square_video,
-                                          size=size)
+                                          size=size,
+                                          offset=offset)
                     counter += 1
 
             print("Number of squared video: ", counter)

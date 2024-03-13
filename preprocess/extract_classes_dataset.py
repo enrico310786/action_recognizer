@@ -56,7 +56,7 @@ if __name__ == "__main__":
     print("Add eng classes")
     df['ENG_CLASS'] = df['CLASS'].map(ita2engclass)
     print("save the csv")
-    df.to_csv("dataset_info.csv", index=False)
+    df.to_csv(os.path.join(dir_dataset, "dataset_info.csv"), index=False)
 
     print("****************************************************************")
 

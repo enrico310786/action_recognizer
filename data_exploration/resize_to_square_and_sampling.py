@@ -8,9 +8,9 @@ Script to test the transformation of a mp3 video of the dataset from rectangle t
 In this case I noted that the recordered video have the heigth and width inverted
 '''
 
-path_video = "/home/enrico/Dataset/Actions/test_actions/temp_svitare/svitare_mp4/IMG_5667.mp4"
+path_video = "/home/enrico/Dataset/Actions/test_actions/mp4_v2/Avvita brugola 2/IMG_6052.mp4"
 sampling_rate = 1 # if 1 the take all frames
-path_new_video = "/home/enrico/Dataset/Actions/test_actions/temp_svitare/svitare_mp4_squared_256/IMG_5667.mp4"
+path_new_video = "/home/enrico/Dataset/Actions/test_actions/test/avvita_brugola_2_6052_squared.mp4"
 fps_rate = 30 # 30 if sampling rate is 1, 10 if sampling rate is 3
 offset = 250
 size = 256
@@ -81,6 +81,9 @@ for i, frame in enumerate(frame_list):
         h, w, c = frame.shape
         center_x = int(w / 2)
         center_y = int(h / 2)
+
+        print("center_x: ", center_x)
+        print("center_y: ", center_y)
 
         if center_x > center_y:
             # the frame is larger

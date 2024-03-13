@@ -45,18 +45,20 @@ def calculate_errors(device,
     '''
 
     class_names = []
+    recording_cameras = []
     reconstructed_embeddings_array = None
     embeddings_array = None
     model = model.eval()
 
     with torch.no_grad():
         # cycle on all batches
-        for inputs, labels, classes in dataloader:
+        for inputs, labels, classes, cameras in dataloader:
             if cfg['model']['name_time_model'] == "3d_slowfast":
                 inputs = [i.to(device) for i in inputs]
             else:
                 inputs = inputs.to(device)
             classes = list(classes)
+            cameras = list(cameras)
             embeddings, reconstructed_embeddings, _ = model(inputs)
 
             if embeddings_array is None:
@@ -70,22 +72,26 @@ def calculate_errors(device,
                 reconstructed_embeddings_array = np.vstack((reconstructed_embeddings_array, reconstructed_embeddings.detach().cpu().numpy()))
 
             class_names.extend(classes)
+            recording_cameras.extend(cameras)
 
         # transform to numpy array
         class_names = np.array(class_names)
+        recording_cameras = np.array(recording_cameras)
 
         print('len(class_names): ', len(class_names))
+        print('len(recording_cameras): ', len(recording_cameras))
         print('reconstructed_embeddings_array.shape: ', reconstructed_embeddings_array.shape)
         print('embeddings_array.shape: ', embeddings_array.shape)
 
         # iter over the array to find error and distances from the correspondig centroid. The centroid is found using the label of the class
-        for classe, emb, rec_emb in zip(class_names, embeddings_array, reconstructed_embeddings_array):
+        for classe, emb, rec_emb, camera in zip(class_names, embeddings_array, reconstructed_embeddings_array, recording_cameras):
             #error = (np.square(emb - rec_emb)).mean()
             error = (np.square(emb - rec_emb)).sum() # è la stessa cosa di criterion = nn.MSELoss(reduction='sum'). Fa la somma dei quadrati delle differenze
 
             df_distribution = df_distribution.append({'ENG_CLASS': classe,
                                                       'RECONSTRUCTION_ERROR': error,
-                                                      'TYPE_DATASET': type_dataset}, ignore_index=True)
+                                                      'TYPE_DATASET': type_dataset,
+                                                      'CAMERA': camera}, ignore_index=True)
 
         return df_distribution
 
@@ -152,7 +158,7 @@ def train_model(cfg,
         val_epoch_losses = []
 
         # cycle on all train batches of the current epoch by executing the train_batch function
-        for inputs, _, _ in tqdm(train_loader, desc=f"epoch {str(epoch)} | train"):
+        for inputs, _, _, _ in tqdm(train_loader, desc=f"epoch {str(epoch)} | train"):
             if cfg['model']['name_time_model'] == "3d_slowfast":
                 inputs = [i.to(device) for i in inputs]
             else:
@@ -165,7 +171,7 @@ def train_model(cfg,
         train_epoch_loss = np.array(train_epoch_losses).mean()
 
         # cycle on all batches of val of the current epoch by calculating the accuracy and the loss function
-        for inputs, _, _  in tqdm(val_loader, desc=f"epoch {str(epoch)} | val"):
+        for inputs, _, _, _ in tqdm(val_loader, desc=f"epoch {str(epoch)} | val"):
             if cfg['model']['name_time_model'] == "3d_slowfast":
                 inputs = [i.to(device) for i in inputs]
             else:
@@ -249,7 +255,7 @@ def plot_learning_curves(epochs, train_losses, val_losses, path_save):
     plt.savefig(os.path.join(path_save, "learning_curves.png"))
 
 
-def analyze_error_distribution(df_distribution, dir_save_results):
+def analyze_error_distribution(df_distribution, dir_save_results, check_camere):
 
     print("-------------------------------------------------------------------")
     print("RECONTRUCTION_ERROR DISTRIBUTION GROUPED BY CLASS")
@@ -260,13 +266,30 @@ def analyze_error_distribution(df_distribution, dir_save_results):
     print("-------------------------------------------------------------------")
 
     # boxplot
-    print("Plot error distribution grouped by dataset and actors")
     plt.figure(figsize=(15, 15))
     sns.boxplot(data=df_distribution[df_distribution['TYPE_DATASET'] == 'ANOMALY'], x="ENG_CLASS", y="RECONSTRUCTION_ERROR")
     plt.xticks(rotation=30, ha='right', rotation_mode='anchor')
     plt.title('Reconstruction error grouped by classes', fontsize=12)
-
     plt.savefig(os.path.join(dir_save_results, "error_distribution_grouped_by_classes.png"))
+
+    if check_camere:
+        print("-------------------------------------------------------------------")
+        print("RECONTRUCTION_ERROR DISTRIBUTION GROUPED BY CLASS and CAMERE")
+        print("")
+        desc_grouped = df_distribution[df_distribution['TYPE_DATASET'] == 'ANOMALY'].groupby(['ENG_CLASS','CAMERA'])[
+            "RECONSTRUCTION_ERROR"].describe()
+        print("RECONTRUCTION_ERROR distrbution for dataset ANOMALY: ")
+        print(desc_grouped)
+        print("-------------------------------------------------------------------")
+
+        plt.figure(figsize=(15, 15))
+        sns.boxplot(data=df_distribution[df_distribution['TYPE_DATASET'] == 'ANOMALY'], x="ENG_CLASS",
+                    y="RECONSTRUCTION_ERROR", hue="CAMERA")
+        plt.xticks(rotation=30, ha='right', rotation_mode='anchor')
+        plt.title('Reconstruction error grouped by classes and camere', fontsize=12)
+        plt.savefig(os.path.join(dir_save_results, "error_distribution_grouped_by_classes_and_camera.png"))
+
+
 
 
 def run_train_test_model(cfg, do_train, do_test):
@@ -340,13 +363,26 @@ def run_train_test_model(cfg, do_train, do_test):
         documents = yaml.dump(cfg, file)
 
     # create the dataloaders
+    check_camere = cfg["dataset"].get("check_camere", None)
+
+    if check_camere is not None:
+        if check_camere == 0:
+            check_camere = False
+        elif check_camere == 1:
+            check_camere = True
+    else:
+        check_camere = False
+
+    print("check_camere: ", check_camere)
+
     train_loader, val_loader, anomaly_loader = create_loaders(df_dataset_train=df_dataset_train,
                                                               df_dataset_val=df_dataset_val,
                                                               df_dataset_anomaly=df_dataset_anomaly,
                                                               data_cfg=cfg["data"],
                                                               dataset_path=dataset_path,
                                                               batch_size=batch_size,
-                                                              is_slowfast=is_slowfast)
+                                                              is_slowfast=is_slowfast,
+                                                              check_camere=check_camere)
 
     # set the device
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -475,7 +511,7 @@ def run_train_test_model(cfg, do_train, do_test):
         print("-------------------------------------------------------------------")
 
         # create dataset for distribution
-        df_distribution = pd.DataFrame(columns=['ENG_CLASS', 'RECONSTRUCTION_ERROR', 'TYPE_DATASET'])
+        df_distribution = pd.DataFrame(columns=['ENG_CLASS', 'RECONSTRUCTION_ERROR', 'TYPE_DATASET', 'CAMERA'])
 
         '''
         # 12 - execute the inferences on the train, val and test set
@@ -505,7 +541,7 @@ def run_train_test_model(cfg, do_train, do_test):
         gc.collect()
         print("-------------------------------------------------------------------")
         print("-------------------------------------------------------------------")
-        analyze_error_distribution(df_distribution, checkpoint_dir)
+        analyze_error_distribution(df_distribution, checkpoint_dir, check_camere)
 
         print("Save the errors and dist distribution dataset at: ", os.path.join(checkpoint_dir, "reconstruction_error_dataset.csv"))
         df_distribution.to_csv(os.path.join(checkpoint_dir, "reconstruction_error_dataset.csv"), index=False)
