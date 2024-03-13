@@ -92,9 +92,9 @@ def make_classification(df_distribution, reference_class, competitive_class, the
     target_names = list(class2label.keys())
     cr = metrics.classification_report(true_label_list, pred_label_list, target_names=target_names)
     if camera is None:
-        f = open(os.path.join(dir_results, "classification_report"), 'w')
+        f = open(os.path.join(dir_results, str(theshorld) + "classification_report"), 'w')
     else:
-        f = open(os.path.join(dir_results, "camera_" + camera + "_classification_report"), 'w')
+        f = open(os.path.join(dir_results, str(theshorld) + "_camera_" + camera + "_classification_report"), 'w')
     f.write('Title\n\nClassification Report\n\n{}'.format(cr))
     f.close()
 
@@ -146,7 +146,7 @@ if __name__ == "__main__":
     print("RECONSTRUCTION_ERROR DISTRIBUTION GROUPED BY CLASS")
     print("")
     desc_grouped = df_distribution.groupby('ENG_CLASS')[
-        "RECONSTRUCTION_ERROR"].describe()[['mean', 'std', 'min', '75%', 'max']]
+        "RECONSTRUCTION_ERROR"].describe()[['mean', 'min', '25%', '75%', 'max']]
     print(desc_grouped)
     print("")
 
@@ -154,7 +154,7 @@ if __name__ == "__main__":
         print("RECONSTRUCTION_ERROR DISTRIBUTION GROUPED BY CLASS and CAMERA")
         print("")
         desc_grouped = df_distribution.groupby(['ENG_CLASS','CAMERA'])[
-            "RECONSTRUCTION_ERROR"].describe()[['mean', 'std', 'min', '75%', 'max']]
+            "RECONSTRUCTION_ERROR"].describe()[['mean', 'min', '25%', '75%', 'max']]
         print(desc_grouped)
         print("")
 
@@ -170,7 +170,7 @@ if __name__ == "__main__":
     print("LOG_RECONSTRUCTION_ERROR DISTRIBUTION GROUPED BY CLASS")
     print("")
     desc_grouped = df_distribution.groupby('ENG_CLASS')[
-        "LOG_RECONSTRUCTION_ERROR"].describe()[['mean', 'std', 'min', '75%', 'max']]
+        "LOG_RECONSTRUCTION_ERROR"].describe()[['mean', 'min', '25%', '75%', 'max']]
     print(desc_grouped)
     print("")
 
@@ -182,10 +182,10 @@ if __name__ == "__main__":
     plt.savefig(os.path.join(dir_results, plot_log_class_pos))
 
     if check_camere:
-        print("RECONSTRUCTION_ERROR DISTRIBUTION GROUPED BY CLASS and CAMERA")
+        print("LOG_RECONSTRUCTION_ERROR DISTRIBUTION GROUPED BY CLASS and CAMERA")
         print("")
         desc_grouped = df_distribution.groupby(['ENG_CLASS', 'CAMERA'])[
-            "LOG_RECONSTRUCTION_ERROR"].describe()[['mean', 'std', 'min', '75%', 'max']]
+            "LOG_RECONSTRUCTION_ERROR"].describe()[['mean', 'min', '25%', '75%', 'max']]
         print(desc_grouped)
         print("")
 
