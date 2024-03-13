@@ -145,7 +145,8 @@ class Dataset_V2(torch.utils.data.Dataset):
         return len(self.df_dataset)
 
     def __getitem__(self, idx):
-        video_path = os.path.join(self.dataset_path, self.df_dataset.iloc[idx]["PATH_VIDEO"])
+        relative_path = self.df_dataset.iloc[idx]["PATH_VIDEO"]
+        video_path = os.path.join(self.dataset_path, relative_path)
         label = self.df_dataset.iloc[idx]["LABEL"]
         classe = self.df_dataset.iloc[idx]["ENG_CLASS"]
 
@@ -160,7 +161,7 @@ class Dataset_V2(torch.utils.data.Dataset):
             frames_tensor = torch.permute(frames_tensor, (1, 0, 2, 3))
 
         if self.check_camere:
-            if video_path.split("/")[0].endswith("_v2"):
+            if relative_path.split("/")[0].endswith("_v2"):
                 camera = "v2"
             else:
                 camera = "v1"
